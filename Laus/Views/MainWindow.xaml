@@ -1,0 +1,46 @@
+﻿<Window x:Class="Laus.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Laus"
+        mc:Ignorable="d"
+        Title="Laus" Height="418" Width="609" ResizeMode="CanMinimize">
+    <DockPanel LastChildFill="False" Height="402" VerticalAlignment="Top">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="35" Margin="10, 10, 0, 15">
+            <Button x:Name="GetDevicesButton" Click="GetDevicesButtonClicked" ToolTip="Получить список доступных устройств в локальной сети" Width="36">
+                <StackPanel>
+                    <Image Source="../Images/devices.png" Height="28" Width="28" />
+                </StackPanel>
+            </Button>
+            <Button x:Name="GetForeignSpecsButton" ToolTip="Получить характеристики выбранного устройства" Margin="20,0,0,0" IsEnabled="False" Click="GetForeignSpecsButtonClicked" Width="36">
+                <StackPanel>
+                    <Image Source="../Images/foreign_specs.png" Height="28" Width="28" />
+                </StackPanel>
+            </Button>
+            <Button x:Name="GetSelfSpecsButton" ToolTip="Получить характеристики собственного устройства" Margin="20,0,0,0" Click="GetSelfSpecsButtonClicked" Width="36">
+                <StackPanel>
+                    <Image Source="../Images/self_specs.png" Height="28" Width="28" />
+                </StackPanel>
+            </Button>
+            <Label Content="Статус выполнения:" FontWeight="Bold" Margin="20,0,0,0"/>
+            <Label x:Name="OperationStatusLabel" Content="{Binding Path=OperationStatus}"/>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Height="331" Margin="10, 0, 0, 20" Width="280">
+            <Label HorizontalAlignment="Center" FontWeight="Bold" FontSize="14">Доступные устройства</Label>
+            <ListView x:Name="LanDevicesListView" DockPanel.Dock="Left" Width="274" SelectionChanged="LanDevicesListViewSelectionChanged" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" ItemsSource="{Binding LanDevices,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="280" Margin="0,0,0,20">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="IP Адрес" DisplayMemberBinding="{Binding Path=IpAddress}" Width="150" />
+                        <GridViewColumn Header="Псевдоним" DisplayMemberBinding="{Binding Path=Alias}" Width="110" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Orientation="Vertical" Height="331" Margin="0, 0, 10, 20" Width="287">
+            <Label HorizontalAlignment="Center" FontWeight="Bold" FontSize="14">Характеристики</Label>
+            <TextBox x:Name="SpecsTextBox" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Height="280" Text="{Binding Path=Specs}" IsReadOnly="True"/>
+        </StackPanel>
+    </DockPanel>
+
+</Window>
