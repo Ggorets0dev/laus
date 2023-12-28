@@ -12,20 +12,10 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            var selfAddresses = NetworkScanner.GetSelfAddresses();
+            var config = Config.Get();
 
-            var firstAddress = selfAddresses[0];
-            var secondAddress = selfAddresses[1];
+            Console.WriteLine(config.AddressesBlacklist[0]);
 
-            //Console.WriteLine($"First IP is {firstAddress}");
-            //Console.WriteLine($"Second IP is {secondAddress}");
-
-            foreach( var address in NetworkScanner.GetLanDevices(secondAddress, 100)) 
-            {
-                Console.WriteLine(address.ToString());
-            }
-
-            Console.WriteLine("Completed");
             Console.ReadLine();
         }
     }

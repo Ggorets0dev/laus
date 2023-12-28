@@ -36,7 +36,6 @@ namespace Laus
             InitializeComponent();
             DataContext = _windowsViewModel;
 
-            _selfSpecsWorker.P
             _selfSpecsWorker.DoWork += GetSelfSpecs;
             _selfSpecsWorker.RunWorkerCompleted += SelfSpecsCollected;
 

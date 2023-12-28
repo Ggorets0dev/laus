@@ -8,8 +8,18 @@ using System.Threading.Tasks;
 
 namespace Laus.Models
 {
-    static public class NetworkScanner // TODO: make internal
+    static internal class NetworkScanner
     {
+        static private readonly List<IPAddress> _addressesBlacklist = new List<IPAddress>();
+
+        static NetworkScanner() 
+        {
+            var config = Config.Get();
+
+            foreach (var address in config.AddressesBlacklist)
+                _addressesBlacklist.Add(IPAddress.Parse(address));
+        }
+
         static public List<IPAddress> GetLanDevices(IPAddress selfAddress, ushort timeout)
         {
             var lanDevices = new List<IPAddress>();
@@ -24,7 +34,7 @@ namespace Laus.Models
             {
                 var pingAddress = IPAddress.Parse(baseAddress + count);
 
-                if (Equals(pingAddress, selfAddress))
+                if (Equals(pingAddress, selfAddress) || _addressesBlacklist.Contains(pingAddress))
                     return;
 
                 try
@@ -45,7 +55,7 @@ namespace Laus.Models
             return lanDevices;
         }
 
-        static public List<IPAddress> GetSelfAddresses() // TODO: make private
+        static public List<IPAddress> GetSelfAddresses()
         {
             var selfAddresses = new List<IPAddress>();
 
@@ -53,19 +63,19 @@ namespace Laus.Models
 
             foreach (var iface in interfaces)
             {
-                if (iface.OperationalStatus == OperationalStatus.Up && iface.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                {
-                    var ipProperties = iface.GetIPProperties();
-                    var ipAddresses = ipProperties.UnicastAddresses;
+                if (iface.OperationalStatus != OperationalStatus.Up || iface.NetworkInterfaceType == NetworkInterfaceType.Loopback)
+                    continue;
 
-                    foreach (var ipAddress in ipAddresses)
-                    {
-                        if (ipAddress.Address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
-                        {
-                            var myIpAddress = ipAddress.Address;
-                            selfAddresses.Add(myIpAddress);
-                        }
-                    }
+                var ipProperties = iface.GetIPProperties();
+                var ipAddresses = ipProperties.UnicastAddresses;
+
+                foreach (var ipAddress in ipAddresses)
+                {
+                    if (ipAddress.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork)
+                        continue;
+
+                    var myIpAddress = ipAddress.Address;
+                    selfAddresses.Add(myIpAddress);
                 }
             }
 
