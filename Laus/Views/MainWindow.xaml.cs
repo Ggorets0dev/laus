@@ -36,11 +36,15 @@ namespace Laus
             _lanDevicesWorker.DoWork += GetLanDevices;
             _lanDevicesWorker.RunWorkerCompleted += LanDevicesCollected;
 
-            _server.ListenAsync();
+            _ = _server.ListenAsync();
         }
+
+        private void BlockControlPanel() => _windowsViewModel.ControlPanelEnabled = false;
+        private void UnblockControlPanel() => _windowsViewModel.ControlPanelEnabled = true;
 
         private void GetDevicesButtonClicked(object sender, RoutedEventArgs e)
         {
+            BlockControlPanel();
             _windowsViewModel.LanDevices.Clear();
             _windowsViewModel.ResetSelectedIndex();
 
@@ -50,6 +54,7 @@ namespace Laus
 
         private void GetSelfSpecsButtonClicked(object sender, RoutedEventArgs e)
         {
+            BlockControlPanel();
             _windowsViewModel.ResetSpecs();
             _windowsViewModel.OperationStatus = "Получение сведений о системе...";
             
@@ -78,6 +83,7 @@ namespace Laus
                 _windowsViewModel.LanDevices.Add(new DeviceViewModel { IpAddress = device.ToString(), Alias = "Не назначен" });
             
             _windowsViewModel.ResetStatus();
+            UnblockControlPanel();
         }
 
         private void GetSelfSpecs(object sender, DoWorkEventArgs e)
@@ -90,6 +96,7 @@ namespace Laus
         {
             _windowsViewModel.Specs = (e.Result as Specification).ToString();
             _windowsViewModel.ResetStatus();
+            UnblockControlPanel();
         }
     }
 }

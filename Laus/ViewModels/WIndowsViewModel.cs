@@ -10,12 +10,13 @@ namespace Laus
 {
     internal class WindowsViewModel : ViewModel
     {
-        private const string _defaultOperationStatus = "Отсутствует";
-        private const string _specsPlaceholder = "Не определены";
+        private readonly string _defaultOperationStatus = "Отсутствует";
+        private readonly string _specsPlaceholder = "Не определены";
 
         private ObservableCollection<DeviceViewModel> _lanDevices;
         private string _operationStatus;
         private string _specs;
+        private bool _controlPanelEnabled;
 
         public ObservableCollection<DeviceViewModel> LanDevices
         {
@@ -33,11 +34,18 @@ namespace Laus
             set => Set(ref _specs, value);
         }
 
+        public bool ControlPanelEnabled
+        {
+            get => _controlPanelEnabled;
+            set => Set(ref _controlPanelEnabled, value);
+        }
+
         public int SelectedIndex { get; set; }
 
         public WindowsViewModel()
         {
             _lanDevices = new ObservableCollection<DeviceViewModel>();
+            _controlPanelEnabled = true;
             ResetSelectedIndex();
             ResetStatus();
             ResetSpecs();
