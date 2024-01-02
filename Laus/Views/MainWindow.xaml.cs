@@ -7,14 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.DirectoryServices;
 using WinHardwareSpecs;
 using Laus.Models;
 using Laus;
@@ -27,6 +19,8 @@ namespace Laus
     public partial class MainWindow : Window
     {
         private WindowsViewModel _windowsViewModel = new WindowsViewModel();
+
+        private Server _server = new Server(IPAddress.Any, 8888);
 
         private BackgroundWorker _selfSpecsWorker = new BackgroundWorker();
         private BackgroundWorker _lanDevicesWorker = new BackgroundWorker();
@@ -41,6 +35,8 @@ namespace Laus
 
             _lanDevicesWorker.DoWork += GetLanDevices;
             _lanDevicesWorker.RunWorkerCompleted += LanDevicesCollected;
+
+            _server.ListenAsync();
         }
 
         private void GetDevicesButtonClicked(object sender, RoutedEventArgs e)
@@ -50,10 +46,6 @@ namespace Laus
 
             _windowsViewModel.OperationStatus = "Получение списка устройств...";
             _lanDevicesWorker.RunWorkerAsync();
-        }
-
-        private void GetForeignSpecsButtonClicked(object sender, RoutedEventArgs e)
-        {
         }
 
         private void GetSelfSpecsButtonClicked(object sender, RoutedEventArgs e)

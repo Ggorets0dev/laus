@@ -13,7 +13,7 @@
                     <Image Source="../Images/devices.png" Height="28" Width="28" />
                 </StackPanel>
             </Button>
-            <Button x:Name="GetForeignSpecsButton" ToolTip="Получить характеристики выбранного устройства" Margin="20,0,0,0" IsEnabled="False" Click="GetForeignSpecsButtonClicked" Width="36">
+            <Button x:Name="GetForeignSpecsButton" ToolTip="Получить характеристики выбранного устройства" Margin="20,0,0,0" IsEnabled="False" Width="36">
                 <StackPanel>
                     <Image Source="../Images/foreign_specs.png" Height="28" Width="28" />
                 </StackPanel>

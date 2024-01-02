@@ -22,6 +22,7 @@ namespace Laus.Models
 
         static public List<IPAddress> GetLanDevices(IPAddress selfAddress, ushort timeout)
         {
+            var client = new Client();
             var lanDevices = new List<IPAddress>();
 
             string selfAddressStr = selfAddress.ToString();
@@ -37,20 +38,11 @@ namespace Laus.Models
                 if (Equals(pingAddress, selfAddress) || _addressesBlacklist.Contains(pingAddress))
                     return;
 
-                try
-                {
-                    var pingReply = new Ping().Send(pingAddress, timeout);
-
-                    if (pingReply == null || pingReply.Status != IPStatus.Success)
-                        return;
-
+                if (client.Ping(pingAddress.ToString()))
                     lanDevices.Add(pingAddress);
-                }
-                catch
-                {
-                    return;
-                }
             }
+
+            client.Dispose();
 
             return lanDevices;
         }

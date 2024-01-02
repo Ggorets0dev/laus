@@ -62,8 +62,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Config.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\NetworkScanner.cs" />
+    <Compile Include="Models\TcpCommandCodes.cs" />
+    <Compile Include="Models\Server.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
     <Compile Include="ViewModels\WIndowsViewModel.cs" />

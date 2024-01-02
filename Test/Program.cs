@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using Laus;
@@ -10,11 +12,14 @@ namespace Test
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var config = Config.Get();
+            var client = new Client();
 
-            Console.WriteLine(config.AddressesBlacklist[0]);
+            foreach (var ip in NetworkScanner.GetSelfAddresses())
+            {
+                Console.WriteLine(NetworkScanner.GetLanDevices(ip, timeout: 300).Count);
+            }
 
             Console.ReadLine();
         }
