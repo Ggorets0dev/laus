@@ -42,6 +42,11 @@ namespace Laus
         private void BlockControlPanel() => _windowsViewModel.ControlPanelEnabled = false;
         private void UnblockControlPanel() => _windowsViewModel.ControlPanelEnabled = true;
 
+        private void GetForeignSpecsButtonClicked(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
         private void GetDevicesButtonClicked(object sender, RoutedEventArgs e)
         {
             BlockControlPanel();
@@ -70,7 +75,7 @@ namespace Laus
             var selfAddresses = NetworkScanner.GetSelfAddresses();
 
             foreach (var selfAddress in selfAddresses)
-                lanDevices.AddRange(NetworkScanner.GetLanDevices(selfAddress, timeout: 100));
+                lanDevices.AddRange(NetworkScanner.GetLanDevices(selfAddress, timeout: 300));
 
             e.Result = lanDevices;
         }

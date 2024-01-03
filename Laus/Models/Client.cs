@@ -15,17 +15,28 @@ namespace Laus.Models
     {
         private bool disposed = false;
 
-        private Ping _ping = new Ping();
         private TcpClient _client;
+        private string _ipAddress;
+        private int _port;
 
-        public Client() => _client = new TcpClient();
-        public Client(string ipAddress, int port) => _client = new TcpClient(ipAddress, port);
+        public Client()
+        {
+            _ipAddress = "127.0.0.1";
+            _port = 8888;
+            _client = new TcpClient(_ipAddress, _port);
+        }
+        public Client(string ipAddress, int port)
+        {
+            _client = new TcpClient(ipAddress, port);
+            _ipAddress = ipAddress;
+            _port = port;
+        }
 
-        public bool Ping(string pingAddress, ushort msTimeout = 100)
+        static public bool Ping(string ipAddress, ushort msTimeout = 100)
         {
             try
             {
-                var pingReply = _ping.Send(pingAddress, msTimeout);
+                var pingReply = new Ping().Send(ipAddress, msTimeout);
 
                 if (pingReply == null || pingReply.Status != IPStatus.Success)
                     return false;
@@ -54,7 +65,6 @@ namespace Laus.Models
 
             _client.Close();
             _client.Dispose();
-            _ping.Dispose();
 
             disposed = true;
         }

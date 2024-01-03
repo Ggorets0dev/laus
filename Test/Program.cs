@@ -12,14 +12,10 @@ namespace Test
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
-            var client = new Client();
-
-            foreach (var ip in NetworkScanner.GetSelfAddresses())
-            {
-                Console.WriteLine(NetworkScanner.GetLanDevices(ip, timeout: 300).Count);
-            }
+            foreach (var inf in NetworkScanner.GetSelfAddresses())
+                NetworkScanner.GetLanDevices(selfAddress: inf, timeout: 100);
 
             Console.ReadLine();
         }

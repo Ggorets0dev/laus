@@ -13,12 +13,22 @@ namespace Laus.Models
         public TcpCommandCodes CommandCode { get; set; }
         public string Data { get; set; }
 
-        public Message(List<byte> bytesRead) 
+        public Message(byte[] bytesRead)
         {
-            string msg = Encoding.UTF8.GetString(bytesRead.ToArray());
+            string msg = Encoding.UTF8.GetString(bytesRead);
 
             CommandCode = (TcpCommandCodes)int.Parse(msg.Substring(0, msg.IndexOf(_separator)));
-            Data = msg.Substring(msg.IndexOf(_separator) + 1, msg.Length - 1);
+            Data = msg.Substring(msg.IndexOf(_separator) + 1, msg.Length - 2);
         }
+
+        public Message(TcpCommandCodes commandCode, string data)
+        {
+            CommandCode = commandCode;
+            Data = data;
+        }
+
+        public Message(List<byte> bytesRead) => new Message(bytesRead.ToArray());
+
+        public override string ToString() => $"{(int)CommandCode}{_separator}{Data}";
     }
 }

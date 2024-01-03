@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,7 +23,6 @@ namespace Laus.Models
 
         static public List<IPAddress> GetLanDevices(IPAddress selfAddress, ushort timeout)
         {
-            var client = new Client();
             var lanDevices = new List<IPAddress>();
 
             string selfAddressStr = selfAddress.ToString();
@@ -33,16 +33,16 @@ namespace Laus.Models
 
             void SearchAvailableDevice(int count)
             {
-                var pingAddress = IPAddress.Parse(baseAddress + count);
+                string strAddress = baseAddress + count.ToString();
+
+                var pingAddress = IPAddress.Parse(strAddress);
 
                 if (Equals(pingAddress, selfAddress) || _addressesBlacklist.Contains(pingAddress))
                     return;
 
-                if (client.Ping(pingAddress.ToString()))
+                if (Client.Ping(strAddress, timeout))
                     lanDevices.Add(pingAddress);
             }
-
-            client.Dispose();
 
             return lanDevices;
         }
@@ -63,7 +63,7 @@ namespace Laus.Models
 
                 foreach (var ipAddress in ipAddresses)
                 {
-                    if (ipAddress.Address.AddressFamily != System.Net.Sockets.AddressFamily.InterNetwork)
+                    if (ipAddress.Address.AddressFamily != AddressFamily.InterNetwork)
                         continue;
 
                     var myIpAddress = ipAddress.Address;

@@ -8,11 +8,11 @@ using System.Windows;
 // набор атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("Laus")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Просмотр основных характеристик ПК в локальной сети")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Ggorets0dev")]
 [assembly: AssemblyProduct("Laus")]
-[assembly: AssemblyCopyright("Copyright ©  2023")]
+[assembly: AssemblyCopyright("Copyright © 2023 Ggorets0dev")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,4 +51,4 @@ using System.Windows;
 // Можно задать все значения или принять номера сборки и редакции по умолчанию 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.5.1.0")]
+[assembly: AssemblyVersion("0.6.1.0")]
