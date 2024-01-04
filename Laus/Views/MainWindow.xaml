@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Laus"
         mc:Ignorable="d"
-        Title="Laus" Height="418" Width="609" ResizeMode="CanMinimize">
+        Title="Laus" Height="418" Width="609" ResizeMode="CanMinimize"
+        Closing="FormClosed">
     <DockPanel LastChildFill="False" Height="402" VerticalAlignment="Top">
         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="35" Margin="10, 10, 0, 15">
             <Button x:Name="GetDevicesButton" Click="GetDevicesButtonClicked" ToolTip="Получить список доступных устройств в локальной сети" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
@@ -28,7 +29,7 @@
         </StackPanel>
         <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Height="331" Margin="10, 0, 0, 20" Width="280">
             <Label HorizontalAlignment="Center" FontWeight="Bold" FontSize="14">Доступные устройства</Label>
-            <ListView x:Name="LanDevicesListView" DockPanel.Dock="Left" Width="274" SelectionChanged="LanDevicesListViewSelectionChanged" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" ItemsSource="{Binding LanDevices,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="280" Margin="0,0,0,20">
+            <ListView x:Name="LanDevicesListView" DockPanel.Dock="Left" Width="274" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" ItemsSource="{Binding LanDevices,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="280" Margin="0,0,0,20">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="Foreground" Value="Black"></Setter>

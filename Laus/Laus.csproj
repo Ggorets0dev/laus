@@ -56,6 +56,8 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -145,6 +147,9 @@
     <Resource Include="Images\devices.png" />
     <Resource Include="Images\foreign_specs.png" />
     <Resource Include="Images\self_specs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\NotifyIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

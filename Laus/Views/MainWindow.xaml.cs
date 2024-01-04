@@ -6,18 +6,22 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Controls;
 using WinHardwareSpecs;
-using Laus.Models;
-using Laus;
 using System.Threading;
 using System.ComponentModel;
+using System.Drawing;
 using Laus.ViewModels.Base;
+using Laus.Models;
+using Laus;
 
 namespace Laus
 {
     public partial class MainWindow : Window
     {
+        private NotifyIcon nIcon = new NotifyIcon();
+
         private WindowsViewModel _windowsViewModel = new WindowsViewModel();
 
         private Server _server = new Server(IPAddress.Any, 8888);
@@ -30,6 +34,12 @@ namespace Laus
             InitializeComponent();
             DataContext = _windowsViewModel;
 
+            nIcon.Visible = true;
+            nIcon.Icon = Properties.Resources.NotifyIcon;
+            nIcon.MouseClick += NotifyIconClicked;
+            nIcon.ContextMenuStrip = new ContextMenuStrip();
+            nIcon.ContextMenuStrip.Items.Add("Выход", null, NotifyIconExitSelected);
+
             _selfSpecsWorker.DoWork += GetSelfSpecs;
             _selfSpecsWorker.RunWorkerCompleted += SelfSpecsCollected;
 
@@ -39,12 +49,45 @@ namespace Laus
             _ = _server.ListenAsync();
         }
 
+        private void NotifyIconClicked(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+                Visibility = Visibility.Visible;
+
+            else if (e.Button == MouseButtons.Right)
+                nIcon.ContextMenuStrip.Show();
+        }
+
+        void NotifyIconExitSelected(object sender, EventArgs e) => System.Windows.Application.Current.Shutdown();
+
+        private void FormClosed(object sender, CancelEventArgs e)
+        {
+            if (_windowsViewModel.ControlPanelEnabled)
+            {
+                Visibility = Visibility.Hidden;
+                e.Cancel = true;
+            }
+
+            else
+            {
+                MessageBoxResult result = System.Windows.MessageBox.Show("Вы уверены, что хотите закрыть программу? Существует активная операция, приложение останется в работе", "Подтверждение закрытия", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                if (result == MessageBoxResult.Yes)
+                    Visibility = Visibility.Hidden;
+
+                e.Cancel = true;
+            }
+        }
+
         private void BlockControlPanel() => _windowsViewModel.ControlPanelEnabled = false;
         private void UnblockControlPanel() => _windowsViewModel.ControlPanelEnabled = true;
 
         private void GetForeignSpecsButtonClicked(object sender, RoutedEventArgs e)
         {
-            
+            if (_windowsViewModel.SelectedIndex == -1)
+            {
+                System.Windows.MessageBox.Show("Устройство для получения характеристик не выбрано", "Отсутствие выбранного устройства", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
         }
 
         private void GetDevicesButtonClicked(object sender, RoutedEventArgs e)
@@ -65,8 +108,6 @@ namespace Laus
             
             _selfSpecsWorker.RunWorkerAsync();
         }
-
-        private void LanDevicesListViewSelectionChanged(object sender, SelectionChangedEventArgs e) => GetForeignSpecsButton.IsEnabled = _windowsViewModel.SelectedIndex != -1;
     
         private void GetLanDevices(object sender, DoWorkEventArgs e)
         {

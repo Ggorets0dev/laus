@@ -30,7 +30,6 @@ namespace Laus.Models
                 var tcpClient = await _listener.AcceptTcpClientAsync();
                 Task.Run(async () => await ProcessClientAsync(tcpClient));
             }
-
         }
 
         async Task ProcessClientAsync(TcpClient tcpClient)
