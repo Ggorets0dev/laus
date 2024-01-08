@@ -14,10 +14,11 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            foreach (var inf in NetworkScanner.GetSelfAddresses())
-                NetworkScanner.GetLanDevices(selfAddress: inf, timeout: 100);
+            //var server = new Server(IPAddress.Any, 8888);
 
-            Console.ReadLine();
+            //server.ListenAsync();
+
+            //Console.ReadLine();
         }
     }
 }

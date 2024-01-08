@@ -9,6 +9,9 @@ namespace Laus.Models
     internal class Message
     {
         static private char _separator = '@';
+        static private char _termination = ';'; 
+
+        static public char Termination => _termination;
 
         public TcpCommandCodes CommandCode { get; set; }
         public string Data { get; set; }
@@ -18,7 +21,7 @@ namespace Laus.Models
             string msg = Encoding.UTF8.GetString(bytesRead);
 
             CommandCode = (TcpCommandCodes)int.Parse(msg.Substring(0, msg.IndexOf(_separator)));
-            Data = msg.Substring(msg.IndexOf(_separator) + 1, msg.Length - 2);
+            Data = msg.Substring(msg.IndexOf(_separator) + 1, msg.Length - 3);
         }
 
         public Message(TcpCommandCodes commandCode, string data)
@@ -27,8 +30,6 @@ namespace Laus.Models
             Data = data;
         }
 
-        public Message(List<byte> bytesRead) => new Message(bytesRead.ToArray());
-
-        public override string ToString() => $"{(int)CommandCode}{_separator}{Data}";
+        public override string ToString() => $"{(int)CommandCode}{_separator}{Data}{_termination}";
     }
 }

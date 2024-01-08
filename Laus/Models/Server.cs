@@ -12,7 +12,7 @@ using System.Net.Http;
 
 namespace Laus.Models
 {
-    public class Server
+    internal class Server
     {
         private TcpListener _listener;
 
@@ -34,20 +34,36 @@ namespace Laus.Models
 
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
+            // Console.WriteLine("Connected");
+
             var stream = tcpClient.GetStream();
             var response = new List<byte>();
             int bytesRead;
 
-            while ((bytesRead = stream.ReadByte()) != '\n')
+            do
+            {
+                bytesRead = stream.ReadByte();
                 response.Add((byte)bytesRead);
+            }
+            while ((char)bytesRead != Message.Termination);
 
-            var message = new Message(response);
+            //Console.WriteLine("Length is " + Encoding.UTF8.GetString(response.ToArray()).Length);
+            //Console.WriteLine(Encoding.UTF8.GetString(response.ToArray()));
+
+            var message = new Message(response.ToArray());
+
+            // Console.WriteLine("Data is - " + message.Data);  
 
             if (message.CommandCode == (int)TcpCommandCodes.CheckUser)
             {
-                byte[] intBytes = BitConverter.GetBytes((int)TcpCommandCodes.ApproveUser);
-                Array.Reverse(intBytes);
-                await stream.WriteAsync(intBytes, 0, intBytes.Length);
+                var approveMessage = new Message(TcpCommandCodes.ApproveUser, "Test");
+
+                // Console.WriteLine("Approve - " +  approveMessage.ToString());
+
+                var bytesMessage = Encoding.UTF8.GetBytes(approveMessage.ToString());
+                
+                Array.Reverse(bytesMessage);
+                await stream.WriteAsync(bytesMessage, 0, bytesMessage.Length);
             }
 
             response.Clear();
