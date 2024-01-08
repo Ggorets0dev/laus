@@ -149,7 +149,10 @@
     <Resource Include="Images\self_specs.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\NotifyIcon.ico" />
+    <Resource Include="Images\notify_icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\check_connection.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

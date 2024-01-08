@@ -20,31 +20,35 @@ namespace Laus
 {
     public partial class MainWindow : Window
     {
-        private NotifyIcon nIcon = new NotifyIcon();
+        private NotifyIcon notifyIcon = new NotifyIcon();
 
         private WindowsViewModel _windowsViewModel = new WindowsViewModel();
 
-        private Server _server = new Server(IPAddress.Any, 8888);
+        private Server _server = new Server(IPAddress.Any);
 
         private BackgroundWorker _selfSpecsWorker = new BackgroundWorker();
         private BackgroundWorker _lanDevicesWorker = new BackgroundWorker();
+        private BackgroundWorker _checkConnectionWorker = new BackgroundWorker();
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = _windowsViewModel;
 
-            nIcon.Visible = true;
-            nIcon.Icon = Properties.Resources.NotifyIcon;
-            nIcon.MouseClick += NotifyIconClicked;
-            nIcon.ContextMenuStrip = new ContextMenuStrip();
-            nIcon.ContextMenuStrip.Items.Add("Выход", null, NotifyIconExitSelected);
+            notifyIcon.Visible = true;
+            notifyIcon.Icon = Properties.Resources.NotifyIcon;
+            notifyIcon.MouseClick += NotifyIconClicked;
+            notifyIcon.ContextMenuStrip = new ContextMenuStrip();
+            notifyIcon.ContextMenuStrip.Items.Add("Выход", null, NotifyIconExitSelected);
 
             _selfSpecsWorker.DoWork += GetSelfSpecs;
             _selfSpecsWorker.RunWorkerCompleted += SelfSpecsCollected;
 
             _lanDevicesWorker.DoWork += GetLanDevices;
             _lanDevicesWorker.RunWorkerCompleted += LanDevicesCollected;
+
+            _checkConnectionWorker.DoWork += CheckConnection;
+            _checkConnectionWorker.RunWorkerCompleted += ConnectionChecked;
 
             _ = _server.ListenAsync();
         }
@@ -55,7 +59,7 @@ namespace Laus
                 Visibility = Visibility.Visible;
 
             else if (e.Button == MouseButtons.Right)
-                nIcon.ContextMenuStrip.Show();
+                notifyIcon.ContextMenuStrip.Show();
         }
 
         void NotifyIconExitSelected(object sender, EventArgs e) => System.Windows.Application.Current.Shutdown();
@@ -81,13 +85,16 @@ namespace Laus
         private void BlockControlPanel() => _windowsViewModel.ControlPanelEnabled = false;
         private void UnblockControlPanel() => _windowsViewModel.ControlPanelEnabled = true;
 
-        private void GetForeignSpecsButtonClicked(object sender, RoutedEventArgs e)
+        private void CheckConnectionButtonClicked(object sender, RoutedEventArgs e)
         {
             if (_windowsViewModel.SelectedIndex == -1)
             {
-                System.Windows.MessageBox.Show("Устройство для получения характеристик не выбрано", "Отсутствие выбранного устройства", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Устройство для проверки соединения не выбрано", "Отсутствие выбранного устройства", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
+
+            BlockControlPanel();
+            _checkConnectionWorker.RunWorkerAsync();
         }
 
         private void GetDevicesButtonClicked(object sender, RoutedEventArgs e)
@@ -127,8 +134,35 @@ namespace Laus
 
             foreach (var device in lanDevices)
                 _windowsViewModel.LanDevices.Add(new DeviceViewModel { IpAddress = device.ToString(), Alias = "Не назначен" });
-            
+
             _windowsViewModel.ResetStatus();
+            UnblockControlPanel();
+        }
+
+        private void CheckConnection(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                string deviceAddress = _windowsViewModel.GetSelectedItem().IpAddress;
+                var client = new Client(deviceAddress);
+
+                e.Result = client.CheckUser();
+            }
+            catch
+            {
+                e.Result = false;
+            }
+        }
+
+        private void ConnectionChecked(object sender, RunWorkerCompletedEventArgs e)
+        {
+            bool checkResult = (bool)e.Result;
+
+            if (checkResult)
+                System.Windows.MessageBox.Show("Устройство доступно для получения характеристик", "Ответ получен", MessageBoxButton.OK, MessageBoxImage.Information);
+            else
+                System.Windows.MessageBox.Show("Устройство недоступно для получения характеристик", "Ошибка соединения", MessageBoxButton.OK, MessageBoxImage.Error);
+
             UnblockControlPanel();
         }
 

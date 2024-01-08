@@ -25,11 +25,30 @@ namespace Laus.Models
             _port = 8888;
             _client = new TcpClient(_ipAddress, _port);
         }
-        public Client(string ipAddress, int port)
+        public Client(string ipAddress, int port = 8888)
         {
             _client = new TcpClient(ipAddress, port);
             _ipAddress = ipAddress;
             _port = port;
+        }
+
+        public bool CheckUser()
+        {
+            var stream = _client.GetStream();
+
+            var checkMessage = new Message(TcpCommandCodes.CheckUser);
+            var checkBytes = Encoding.UTF8.GetBytes(checkMessage.ToString());
+            stream.Write(checkBytes, 0, checkBytes.Length);
+
+            var approveBuffer = new byte[Message.MaxSize];
+            int bytesRead = stream.Read(approveBuffer, 0, approveBuffer.Length);
+
+            stream.Close();
+
+            string cleanMessage = Message.ProccessRawBytes(approveBuffer);
+            var approveMessage = new Message(cleanMessage);
+
+            return approveMessage.CommandCode == TcpCommandCodes.ApproveUser;
         }
 
         static public bool Ping(string ipAddress, ushort msTimeout = 100)
@@ -63,8 +82,11 @@ namespace Laus.Models
                 // -
             }
 
-            _client.Close();
-            _client.Dispose();
+            if (_client != null)
+            {
+                _client.Close();
+                _client.Dispose();
+            }
 
             disposed = true;
         }

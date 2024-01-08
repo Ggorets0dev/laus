@@ -16,7 +16,7 @@ namespace Laus.Models
     {
         private TcpListener _listener;
 
-        public Server(IPAddress ipAddress, int port)
+        public Server(IPAddress ipAddress, int port = 8888)
         {
             _listener = new TcpListener(ipAddress, port);
         }
@@ -50,13 +50,15 @@ namespace Laus.Models
             //Console.WriteLine("Length is " + Encoding.UTF8.GetString(response.ToArray()).Length);
             //Console.WriteLine(Encoding.UTF8.GetString(response.ToArray()));
 
-            var message = new Message(response.ToArray());
+            string readMessage = Encoding.UTF8.GetString(response.ToArray());
+
+            var message = new Message(readMessage);
 
             // Console.WriteLine("Data is - " + message.Data);  
 
             if (message.CommandCode == (int)TcpCommandCodes.CheckUser)
             {
-                var approveMessage = new Message(TcpCommandCodes.ApproveUser, "Test");
+                var approveMessage = new Message(TcpCommandCodes.ApproveUser);
 
                 // Console.WriteLine("Approve - " +  approveMessage.ToString());
 
