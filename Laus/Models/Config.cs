@@ -8,11 +8,18 @@ using Newtonsoft.Json;
 
 namespace Laus.Models
 {
-    public class Config
+    internal class Config
     {
         static private readonly string _configPath = "./config.json";
+        static private readonly ushort _maxTimeoutMs = 60_000;
+        static private readonly byte _maxAliasLength = 15;
+
+        static public ushort MaxTimeoutMs => _maxTimeoutMs;
+        static public byte MaxAliasLength => _maxAliasLength;
 
         public List<string> AddressesBlacklist { get; set; }
+        public ushort TimeoutMs { get; set; }
+        public string Alias { get; set; }
 
         static public Config Get()
         {
@@ -25,6 +32,16 @@ namespace Laus.Models
                     return serializer.Deserialize<Config>(textReader);
                 }
             }
+        }
+
+        public void Save()
+        {
+            string objJson = JsonConvert.SerializeObject(this, Formatting.Indented);
+            
+            var writeStream = new StreamWriter(new FileStream(_configPath, FileMode.Create, FileAccess.Write));
+            
+            writeStream.Write(objJson);
+            writeStream.Close();
         }
     }
 }

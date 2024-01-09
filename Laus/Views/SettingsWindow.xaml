@@ -18,15 +18,15 @@
                 <Separator Opacity="0" Height="5"/>
                 <StackPanel Orientation="Horizontal">
                     <Label>Максимальное время отклика (мс):</Label>
-                    <TextBox AcceptsReturn="False" TextWrapping="NoWrap" Width="40" Height="20" />
+                    <TextBox Name="TimeoutTextBox" PreviewTextInput="TimeoutTextBoxPreview" AcceptsReturn="False" TextWrapping="NoWrap" Width="40" Height="20" />
                 </StackPanel>
                 <Separator Opacity="0" Height="5"/>
                 <StackPanel Orientation="Horizontal">
                     <Label>Псевдоним устройства:</Label>
-                    <TextBox AcceptsReturn="False" TextWrapping="NoWrap" Width="141" Height="20" />
+                    <TextBox Name="AliasTextBox" AcceptsReturn="False" TextWrapping="NoWrap" Width="141" Height="20" />
                 </StackPanel>
                 <Separator Opacity="0" Height="10"/>
-                <Button Width="71" HorizontalAlignment="Left" Margin="5,0,0,0">Сохранить</Button>
+                <Button Width="71" HorizontalAlignment="Left" Margin="5,0,0,0" Click="SaveButtonClicked">Сохранить</Button>
             </StackPanel>
         </GroupBox>
         <GroupBox Height="110" Header="О программе" BorderBrush="#FF7F7F7F" FontSize="13">

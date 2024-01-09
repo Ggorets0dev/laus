@@ -146,7 +146,7 @@ namespace Laus
             var selfAddresses = NetworkScanner.GetSelfAddresses();
 
             foreach (var selfAddress in selfAddresses)
-                lanDevices.AddRange(NetworkScanner.GetLanDevices(selfAddress, timeout: 300));
+                lanDevices.AddRange(NetworkScanner.GetLanDevices(selfAddress, timeout: Config.Get().TimeoutMs));
 
             e.Result = lanDevices;
         }
