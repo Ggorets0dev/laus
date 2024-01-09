@@ -5,16 +5,28 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Laus"
         mc:Ignorable="d"
-        Title="Laus" Height="418" Width="609" ResizeMode="CanMinimize"
+        Title="Laus" Height="506" Width="609" ResizeMode="CanMinimize"
         Closing="FormClosed">
-    <DockPanel LastChildFill="False" Height="402" VerticalAlignment="Top">
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Height="35" Margin="10, 10, 0, 15">
+    <Grid Margin="10,0,10,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <!-- Ряд для кнопок -->
+            <RowDefinition Height="Auto" />
+            <!-- Ряд для ListView и TextBox -->
+            <RowDefinition Height="Auto" />
+            <!-- Ряд для Label и LineEdit -->
+            <RowDefinition Height="Auto" />
+            <!-- Ряд для двух Label -->
+        </Grid.RowDefinitions>
+
+        <!-- Верхний ряд с кнопками -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10, 5, 0, 5">
             <Button x:Name="GetDevicesButton" Click="GetDevicesButtonClicked" ToolTip="Получить список доступных устройств в локальной сети" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
                 <StackPanel>
                     <Image Source="../Images/devices.png" Height="28" Width="28" />
                 </StackPanel>
             </Button>
-            <Button x:Name="GetForeignSpecsButton" ToolTip="Получить характеристики выбранного устройства" Margin="20,0,0,0" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
+            <Button x:Name="GetForeignSpecsButton" Click="GetForeignSpecsButtonClicked" ToolTip="Получить характеристики выбранного устройства" Margin="20,0,0,0" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
                 <StackPanel>
                     <Image Source="../Images/foreign_specs.png" Height="28" Width="28" />
                 </StackPanel>
@@ -29,29 +41,65 @@
                     <Image Source="../Images/self_specs.png" Height="28" Width="28" />
                 </StackPanel>
             </Button>
-            <Label Content="Статус выполнения:" FontWeight="Bold" Margin="20,0,0,0"/>
-            <Label x:Name="OperationStatusLabel" Content="{Binding Path=OperationStatus}"/>
+            <Button x:Name="OpenSettingsButton" Click="OpenSettingsButtonClicked" ToolTip="Открыть настройки программы" Margin="20,0,0,0" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
+                <StackPanel>
+                    <Image Source="../Images/settings.png" Height="28" Width="28" />
+                </StackPanel>
+            </Button>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Left" Orientation="Vertical" Height="331" Margin="10, 0, 0, 20" Width="280">
-            <Label HorizontalAlignment="Center" FontWeight="Bold" FontSize="14">Доступные устройства</Label>
-            <ListView x:Name="LanDevicesListView" DockPanel.Dock="Left" Width="274" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" ItemsSource="{Binding LanDevices,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="280" Margin="0,0,0,20">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="Foreground" Value="Black"></Setter>
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="IP Адрес" DisplayMemberBinding="{Binding Path=IpAddress}" Width="150" />
-                        <GridViewColumn Header="Псевдоним" DisplayMemberBinding="{Binding Path=Alias}" Width="110" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-        </StackPanel>
-        <StackPanel DockPanel.Dock="Right" Orientation="Vertical" Height="331" Margin="0, 0, 10, 20" Width="287">
-            <Label HorizontalAlignment="Center" FontWeight="Bold" FontSize="14">Характеристики</Label>
-            <TextBox x:Name="SpecsTextBox" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Height="280" Text="{Binding Path=Specs}" IsReadOnly="True"/>
-        </StackPanel>
-    </DockPanel>
 
+        <!-- ListView и TextBox -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="32*" />
+                <ColumnDefinition Width="273*"/>
+                <!-- Для ListView -->
+                <ColumnDefinition Width="305*" />
+                <!-- Для TextBox -->
+            </Grid.ColumnDefinitions>
+
+            <!-- ListView с Label -->
+            <StackPanel HorizontalAlignment="Center" Grid.ColumnSpan="2" Width="275">
+                <Label Content="Доступные устройства" FontWeight="Bold" FontSize="13" />
+                <ListView x:Name="LanDevicesListView" DockPanel.Dock="Left" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" ItemsSource="{Binding LanDevices,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="324" Width="274">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Foreground" Value="Black"></Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="IP Адрес" DisplayMemberBinding="{Binding Path=IpAddress}" Width="150" />
+                            <GridViewColumn Header="Псевдоним" DisplayMemberBinding="{Binding Path=Alias}" Width="110" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+
+            <!-- TextBox с Label -->
+            <StackPanel HorizontalAlignment="Center" Grid.Column="2" Width="284">
+                <Label Content="Характеристики" FontWeight="Bold" FontSize="13" />
+                <TextBox x:Name="SpecsTextBox" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Height="324" Text="{Binding Path=Specs}" IsReadOnly="True"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Label и LineEdit -->
+        <Grid Grid.Row="2" Margin="0,10,0,70" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <!-- Для Label -->
+                <ColumnDefinition Width="*" />
+                <!-- Для LineEdit -->
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Адрес устройства:" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" />
+            <TextBox Margin="5,4,334,4" AcceptsReturn="False" TextWrapping="NoWrap" FontSize="13" Grid.Column="1" />
+        </Grid>
+
+        <!-- Две Label по горизонтали -->
+        <StackPanel Orientation="Horizontal" Grid.Row="3">
+            <Label Content="Статус выполнения:" FontWeight="Bold" FontSize="13"/>
+            <Label x:Name="OperationStatusLabel" Content="{Binding Path=OperationStatus}" FontSize="13"/>
+        </StackPanel>
+    </Grid>
 </Window>

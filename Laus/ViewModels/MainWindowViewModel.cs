@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Laus
 {
-    internal class WindowsViewModel : ViewModel
+    internal class MainWindowViewModel : ViewModel
     {
         private readonly string _defaultOperationStatus = "Отсутствует";
         private readonly string _specsPlaceholder = "Не определены";
@@ -42,7 +42,7 @@ namespace Laus
 
         public int SelectedIndex { get; set; }
 
-        public WindowsViewModel()
+        public MainWindowViewModel()
         {
             _lanDevices = new ObservableCollection<DeviceViewModel>();
             _controlPanelEnabled = true;

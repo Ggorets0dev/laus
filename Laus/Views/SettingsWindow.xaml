@@ -1,0 +1,50 @@
+﻿<Window x:Class="Laus.Views.SettingsWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Laus.Views"
+      mc:Ignorable="d"
+      Title="Настройки" Background="White" Height="328" Width="544" ResizeMode="CanMinimize">
+
+    <StackPanel Orientation="Vertical" Background="White" Margin="10,0,10,8" >
+        <GroupBox Height="168" Header="Настройки" BorderBrush="#FF7F7F7F" FontSize="13">
+            <StackPanel Orientation="Vertical">
+                <Separator Opacity="0" Height="2"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Используемая сеть:</Label>
+                    <ComboBox Width="154" Height="18" />
+                </StackPanel>
+                <Separator Opacity="0" Height="5"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Максимальное время отклика (мс):</Label>
+                    <TextBox AcceptsReturn="False" TextWrapping="NoWrap" Width="40" Height="20" />
+                </StackPanel>
+                <Separator Opacity="0" Height="5"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Псевдоним устройства:</Label>
+                    <TextBox AcceptsReturn="False" TextWrapping="NoWrap" Width="141" Height="20" />
+                </StackPanel>
+                <Separator Opacity="0" Height="10"/>
+                <Button Width="71" HorizontalAlignment="Left" Margin="5,0,0,0">Сохранить</Button>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox Height="110" Header="О программе" BorderBrush="#FF7F7F7F" FontSize="13">
+            <StackPanel Orientation="Vertical">
+                <Separator Opacity="0" Height="2"/>
+                <StackPanel Orientation="Horizontal">
+                    <Label Name="test">Версия:</Label>
+                    <Label Content="{Binding Path=Version}"></Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Разработчик:</Label>
+                    <Label>Ggorets0dev</Label>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label>Репозиторий:</Label>
+                    <Label>https://github.com/Ggorets0dev/laus</Label>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+    </StackPanel>
+</Window>
