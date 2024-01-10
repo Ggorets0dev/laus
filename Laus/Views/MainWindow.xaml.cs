@@ -142,12 +142,20 @@ namespace Laus
         private void GetLanDevices(object sender, DoWorkEventArgs e)
         {
             var lanDevices = new List<IPAddress>();
+
+            if (RuntimeSettings.IsAddressSelected())
+            {
+                var selectedAddress = IPAddress.Parse(RuntimeSettings.selfAddress);
+                ushort pingTimoutMs = Config.Get().TimeoutMs;
+
+                lanDevices = NetworkScanner.GetLanDevices(selectedAddress, pingTimoutMs);
+            }
+
+            else
+            {
+                System.Windows.MessageBox.Show("Сеть для поиска устройств не выбрана, определите ее в настройках приложения", "Сеть не выбрана", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             
-            var selfAddresses = NetworkScanner.GetSelfAddresses();
-
-            foreach (var selfAddress in selfAddresses)
-                lanDevices.AddRange(NetworkScanner.GetLanDevices(selfAddress, timeout: Config.Get().TimeoutMs));
-
             e.Result = lanDevices;
         }
 

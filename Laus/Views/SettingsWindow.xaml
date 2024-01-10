@@ -13,7 +13,7 @@
                 <Separator Opacity="0" Height="2"/>
                 <StackPanel Orientation="Horizontal">
                     <Label>Используемая сеть:</Label>
-                    <ComboBox Width="154" Height="18" />
+                    <ComboBox Name="AddressComboBox" Width="154" Height="23" />
                 </StackPanel>
                 <Separator Opacity="0" Height="5"/>
                 <StackPanel Orientation="Horizontal">

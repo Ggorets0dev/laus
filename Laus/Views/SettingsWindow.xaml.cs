@@ -17,10 +17,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Laus.Views
 {
-    public partial class SettingsWindow : Window
+    public partial class SettingsWindow : System.Windows.Window
     {
         private SettingsViewModel _windowViewModel = new SettingsViewModel();
 
@@ -30,14 +31,23 @@ namespace Laus.Views
             DataContext = _windowViewModel;
 
             Assembly assembly = Assembly.GetExecutingAssembly();
-
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             _windowViewModel.Version = fileVersionInfo.FileVersion;
 
             var config = Config.Get();
-
             AliasTextBox.Text = config.Alias;
             TimeoutTextBox.Text = config.TimeoutMs.ToString();
+
+            AddressComboBox.ItemsSource = NetworkScanner.GetSelfAddresses();
+
+            foreach (var item in AddressComboBox.Items)
+            {
+                if (item.ToString() == RuntimeSettings.selfAddress)
+                {
+                    AddressComboBox.SelectedValue = item;
+                    break;
+                }
+            }
         }
 
         #region Обработчики событий формы
@@ -66,6 +76,8 @@ namespace Laus.Views
             config.Alias = alias;
 
             config.Save();
+
+            RuntimeSettings.selfAddress = AddressComboBox.Text;
 
             System.Windows.MessageBox.Show("Файл конфигурации успешно сохранен", "Сохранение завершено", MessageBoxButton.OK, MessageBoxImage.Information);
         }
