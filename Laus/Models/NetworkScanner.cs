@@ -21,9 +21,9 @@ namespace Laus.Models
                 _addressesBlacklist.Add(IPAddress.Parse(address));
         }
 
-        static public List<IPAddress> GetLanDevices(IPAddress selfAddress, ushort timeout)
+        static public List<DeviceViewModel> GetLanDevices(IPAddress selfAddress, ushort timeout)
         {
-            var lanDevices = new List<IPAddress>();
+            var lanDevices = new List<DeviceViewModel>();
 
             string selfAddressStr = selfAddress.ToString();
             string baseAddress = selfAddressStr.Substring(0, selfAddressStr.LastIndexOf('.')) + '.';
@@ -41,7 +41,22 @@ namespace Laus.Models
                     return;
 
                 if (Client.Ping(strAddress, timeout))
-                    lanDevices.Add(pingAddress);
+                {
+                    try
+                    {
+                        var client = new Client(strAddress);
+
+                        var checkResult = client.CheckUser();
+
+                        if (!checkResult.isApproved)
+                            return;
+
+                        var device = new DeviceViewModel{ IpAddress = strAddress, Alias = checkResult.alias };
+
+                        lanDevices.Add(device);
+                    }
+                    catch { } // Skip device
+                }
             }
 
             return lanDevices;

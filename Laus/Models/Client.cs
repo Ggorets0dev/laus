@@ -32,7 +32,7 @@ namespace Laus.Models
             _port = port;
         }
 
-        public bool CheckUser()
+        public (bool isApproved, string alias) CheckUser()
         {
             var stream = _client.GetStream();
 
@@ -40,15 +40,15 @@ namespace Laus.Models
             var checkBytes = Encoding.UTF8.GetBytes(checkMessage.ToString());
             stream.Write(checkBytes, 0, checkBytes.Length);
 
-            var approveBuffer = new byte[Message.MaxSize];
-            int bytesRead = stream.Read(approveBuffer, 0, approveBuffer.Length);
+            var readBuffer = new byte[Message.MaxSize];
+            int bytesRead = stream.Read(readBuffer, 0, readBuffer.Length);
 
             stream.Close();
 
-            string cleanMessage = Message.ProccessRawBytes(approveBuffer);
-            var approveMessage = new Message(cleanMessage);
+            string cleanMessage = Message.ProccessRawBytes(readBuffer);
+            var readMessage = new Message(cleanMessage);
 
-            return approveMessage.CommandCode == TcpCommandCodes.ApproveUser;
+            return (readMessage.CommandCode == TcpCommandCodes.ApproveUser, readMessage.Data);
         }
 
         static public bool Ping(string ipAddress, ushort msTimeout = 100)

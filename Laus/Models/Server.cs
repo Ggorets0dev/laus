@@ -56,15 +56,14 @@ namespace Laus.Models
 
             // Console.WriteLine("Data is - " + message.Data);  
 
-            if (message.CommandCode == (int)TcpCommandCodes.CheckUser)
+            if (message.CommandCode == TcpCommandCodes.CheckUser)
             {
-                var approveMessage = new Message(TcpCommandCodes.ApproveUser);
-
-                // Console.WriteLine("Approve - " +  approveMessage.ToString());
-
+                string alias = Config.Get().Alias;
+                var approveMessage = new Message(TcpCommandCodes.ApproveUser, alias);
                 var bytesMessage = Encoding.UTF8.GetBytes(approveMessage.ToString());
-                
+
                 Array.Reverse(bytesMessage);
+
                 await stream.WriteAsync(bytesMessage, 0, bytesMessage.Length);
             }
 

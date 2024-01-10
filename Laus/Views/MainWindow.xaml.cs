@@ -141,7 +141,7 @@ namespace Laus
 
         private void GetLanDevices(object sender, DoWorkEventArgs e)
         {
-            var lanDevices = new List<IPAddress>();
+            var lanDevices = new List<DeviceViewModel>();
 
             if (RuntimeSettings.IsAddressSelected())
             {
@@ -161,10 +161,10 @@ namespace Laus
 
         private void LanDevicesCollected(object sender, RunWorkerCompletedEventArgs e)
         {
-            var lanDevices = e.Result as List<IPAddress>;
+            var lanDevices = e.Result as List<DeviceViewModel>;
 
             foreach (var device in lanDevices)
-                _windowViewModel.LanDevices.Add(new DeviceViewModel { IpAddress = device.ToString(), Alias = "Не назначен" });
+                _windowViewModel.LanDevices.Add(device);
 
             _windowViewModel.ResetStatus();
             UnblockControlPanel();
@@ -177,7 +177,7 @@ namespace Laus
                 string deviceAddress = _windowViewModel.GetSelectedItem().IpAddress;
                 var client = new Client(deviceAddress);
 
-                e.Result = client.CheckUser();
+                e.Result = client.CheckUser().isApproved;
             }
             catch
             {

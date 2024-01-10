@@ -64,9 +64,9 @@ namespace Laus.Views
                 return;
             }
 
-            else if (alias.Length > Config.MaxAliasLength)
+            else if (alias.Length == 0 || alias.Length > Config.MaxAliasLength)
             {
-                System.Windows.MessageBox.Show($"Длина псевдонима не может превышать {Config.MaxAliasLength} символов", "Значение не может быть использовано", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show($"Длина псевдонима может быть от 1 до {Config.MaxAliasLength} символов", "Значение не может быть использовано", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
