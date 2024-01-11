@@ -26,7 +26,7 @@ namespace Laus.Models
             var lanDevices = new List<DeviceViewModel>();
 
             string selfAddressStr = selfAddress.ToString();
-            string baseAddress = selfAddressStr.Substring(0, selfAddressStr.LastIndexOf('.')) + '.';
+            string baseAddress = selfAddressStr.Substring(0, selfAddressStr.LastIndexOf('.') + 1);
 
             var numberOfThreads = new ParallelOptions { MaxDegreeOfParallelism = 16 };
             Parallel.For(1, 255, numberOfThreads, SearchAvailableDevice);

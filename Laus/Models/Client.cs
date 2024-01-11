@@ -8,6 +8,9 @@ using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows;
+using WinHardwareSpecs;
+using Newtonsoft.Json;
+using System.Runtime.InteropServices;
 
 namespace Laus.Models
 {
@@ -36,9 +39,8 @@ namespace Laus.Models
         {
             var stream = _client.GetStream();
 
-            var checkMessage = new Message(TcpCommandCodes.CheckUser);
-            var checkBytes = Encoding.UTF8.GetBytes(checkMessage.ToString());
-            stream.Write(checkBytes, 0, checkBytes.Length);
+            var bytesMessage = new Message(TcpCommandCodes.CheckUser).ToBytes();
+            stream.Write(bytesMessage, 0, bytesMessage.Length);
 
             var readBuffer = new byte[Message.MaxSize];
             int bytesRead = stream.Read(readBuffer, 0, readBuffer.Length);
@@ -49,6 +51,29 @@ namespace Laus.Models
             var readMessage = new Message(cleanMessage);
 
             return (readMessage.CommandCode == TcpCommandCodes.ApproveUser, readMessage.Data);
+        }
+
+        public Specification GetSpecification()
+        {
+            var stream = _client.GetStream();
+
+            var bytesMessage = new Message(TcpCommandCodes.RequestSpecs).ToBytes();
+            stream.Write(bytesMessage, 0, bytesMessage.Length);
+
+            var readBuffer = new byte[Message.MaxSize];
+            int bytesRead = stream.Read(readBuffer, 0, readBuffer.Length);
+
+            stream.Close();
+
+            if (bytesRead == 0)
+                throw new WebException();
+
+            string cleanMessage = Message.ProccessRawBytes(readBuffer);
+            var readMessage = new Message(cleanMessage);
+
+            var specification = JsonConvert.DeserializeObject<Specification>(readMessage.Data);
+
+            return specification;
         }
 
         static public bool Ping(string ipAddress, ushort msTimeout = 100)

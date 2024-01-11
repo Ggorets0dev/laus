@@ -9,7 +9,7 @@ namespace Laus.Models
 {
     internal class Message
     {
-        static private readonly ushort _maxSize = 1024;
+        static private readonly ushort _maxSize = 2048;
         
         static private readonly char _separator = '@';
         static private readonly char _termination = ';'; 
@@ -43,5 +43,7 @@ namespace Laus.Models
         }
 
         public override string ToString() => $"{(int)CommandCode}{_separator}{Data}{_termination}";
+
+        public byte[] ToBytes() => Encoding.UTF8.GetBytes(ToString());
     }
 }

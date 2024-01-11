@@ -30,6 +30,7 @@ namespace Laus
         private BackgroundWorker _selfSpecsWorker = new BackgroundWorker();
         private BackgroundWorker _lanDevicesWorker = new BackgroundWorker();
         private BackgroundWorker _checkConnectionWorker = new BackgroundWorker();
+        private BackgroundWorker _foreignSpecsWorker = new BackgroundWorker();
 
         public MainWindow()
         {
@@ -43,13 +44,16 @@ namespace Laus
             notifyIcon.ContextMenuStrip.Items.Add("Выход", null, NotifyIconExitSelected);
 
             _selfSpecsWorker.DoWork += GetSelfSpecs;
-            _selfSpecsWorker.RunWorkerCompleted += SelfSpecsCollected;
+            _selfSpecsWorker.RunWorkerCompleted += SpecsCollected;
 
             _lanDevicesWorker.DoWork += GetLanDevices;
             _lanDevicesWorker.RunWorkerCompleted += LanDevicesCollected;
 
             _checkConnectionWorker.DoWork += CheckConnection;
             _checkConnectionWorker.RunWorkerCompleted += ConnectionChecked;
+
+            _foreignSpecsWorker.DoWork += GetForeignSpecs;
+            _foreignSpecsWorker.RunWorkerCompleted += SpecsCollected;
 
             _ = _server.ListenAsync();
         }
@@ -62,7 +66,6 @@ namespace Laus
         #endregion
 
         #region Обработчики событий формы
-
         private void NotifyIconClicked(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -101,7 +104,7 @@ namespace Laus
             }
 
             BlockControlPanel();
-            _windowViewModel.OperationStatus = "Проверка доступности устройства..";
+            _windowViewModel.OperationStatus = "Проверка доступности устройства...";
             _checkConnectionWorker.RunWorkerAsync();
         }
 
@@ -126,7 +129,15 @@ namespace Laus
 
         private void GetForeignSpecsButtonClicked(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            if (_windowViewModel.SelectedIndex == -1)
+            {
+                System.Windows.MessageBox.Show("Устройство для проверки соединения не выбрано", "Отсутствие выбранного устройства", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            BlockControlPanel();
+            _windowViewModel.OperationStatus = "Получение характеристик выбранного устройства...";
+            _foreignSpecsWorker.RunWorkerAsync();
         }
 
         private void OpenSettingsButtonClicked(object sender, RoutedEventArgs e)
@@ -134,11 +145,9 @@ namespace Laus
             var settingsForm = new SettingsWindow();
             settingsForm.ShowDialog();
         }
-
         #endregion
 
         #region Компоненты фоновых потоков
-
         private void GetLanDevices(object sender, DoWorkEventArgs e)
         {
             var lanDevices = new List<DeviceViewModel>();
@@ -204,13 +213,37 @@ namespace Laus
             e.Result = specification;
         }
 
-        private void SelfSpecsCollected(object sender, RunWorkerCompletedEventArgs e)
+        private void SpecsCollected(object sender, RunWorkerCompletedEventArgs e)
         {
-            _windowViewModel.Specs = (e.Result as Specification).ToString();
+            if (e.Result != null)
+            {
+                var specification = e.Result as Specification;
+                _windowViewModel.Specs = specification.ToString();
+            }
+
+            else
+            {
+                System.Windows.MessageBox.Show("Не удалось получить характеристики из-за непредвиденной ошибки", "Неудачная попытка получения характеристик", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
             _windowViewModel.ResetStatus();
             UnblockControlPanel();
         }
+        
+        private void GetForeignSpecs(object sender, DoWorkEventArgs e)
+        {
+            try
+            {
+                string deviceAddress = _windowViewModel.GetSelectedItem().IpAddress;
+                var client = new Client(deviceAddress);
 
+                e.Result = client.GetSpecification();
+            }
+            catch (WebException ex)
+            {
+                e.Result = null;
+            }
+        }
         #endregion
     }
 }

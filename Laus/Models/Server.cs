@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows;
 using System.Net.Http;
+using WinHardwareSpecs;
 
 namespace Laus.Models
 {
@@ -34,8 +35,6 @@ namespace Laus.Models
 
         async Task ProcessClientAsync(TcpClient tcpClient)
         {
-            // Console.WriteLine("Connected");
-
             var stream = tcpClient.GetStream();
             var response = new List<byte>();
             int bytesRead;
@@ -47,20 +46,25 @@ namespace Laus.Models
             }
             while ((char)bytesRead != Message.Termination);
 
-            //Console.WriteLine("Length is " + Encoding.UTF8.GetString(response.ToArray()).Length);
-            //Console.WriteLine(Encoding.UTF8.GetString(response.ToArray()));
-
             string readMessage = Encoding.UTF8.GetString(response.ToArray());
-
             var message = new Message(readMessage);
-
-            // Console.WriteLine("Data is - " + message.Data);  
 
             if (message.CommandCode == TcpCommandCodes.CheckUser)
             {
                 string alias = Config.Get().Alias;
-                var approveMessage = new Message(TcpCommandCodes.ApproveUser, alias);
-                var bytesMessage = Encoding.UTF8.GetBytes(approveMessage.ToString());
+                var bytesMessage = new Message(TcpCommandCodes.ApproveUser, alias).ToBytes();
+
+                Array.Reverse(bytesMessage);
+
+                await stream.WriteAsync(bytesMessage, 0, bytesMessage.Length);
+            }
+
+            else if (message.CommandCode == TcpCommandCodes.RequestSpecs)
+            {
+                var specs = SpecMonitor.GetSpecification();
+                string specsJson = specs.ToJson();
+
+                var bytesMessage =  new Message(TcpCommandCodes.ResponseSpecs, specsJson).ToBytes();
 
                 Array.Reverse(bytesMessage);
 

@@ -5,10 +5,11 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Laus.Views"
       mc:Ignorable="d"
-      Title="Настройки" Background="White" Height="328" Width="544" ResizeMode="CanMinimize">
+      Title="Настройки" Background="White" Height="334" Width="544" ResizeMode="CanMinimize"
+      PreviewKeyDown="FormKeyPreview">
 
     <StackPanel Orientation="Vertical" Background="White" Margin="10,0,10,8" >
-        <GroupBox Height="168" Header="Настройки" BorderBrush="#FF7F7F7F" FontSize="13">
+        <GroupBox Height="174" Header="Настройки" BorderBrush="#FF7F7F7F" FontSize="13">
             <StackPanel Orientation="Vertical">
                 <Separator Opacity="0" Height="2"/>
                 <StackPanel Orientation="Horizontal">
@@ -27,9 +28,10 @@
                 </StackPanel>
                 <Separator Opacity="0" Height="10"/>
                 <Button Width="71" HorizontalAlignment="Left" Margin="5,0,0,0" Click="SaveButtonClicked">Сохранить</Button>
+                <Separator Opacity="0" Height="10"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox Height="110" Header="О программе" BorderBrush="#FF7F7F7F" FontSize="13">
+        <GroupBox Height="113" Header="О программе" BorderBrush="#FF7F7F7F" FontSize="13">
             <StackPanel Orientation="Vertical">
                 <Separator Opacity="0" Height="2"/>
                 <StackPanel Orientation="Horizontal">
