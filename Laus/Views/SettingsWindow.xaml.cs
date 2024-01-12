@@ -18,6 +18,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Net;
 
 namespace Laus.Views
 {
@@ -34,20 +35,15 @@ namespace Laus.Views
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
             _windowViewModel.Version = fileVersionInfo.FileVersion;
 
+            TimeoutTextBox.MaxLength = Config.MaxTimeoutMs.ToString().Length;
+            AliasTextBox.MaxLength = Config.MaxAliasLength;
+
             var config = Config.Get();
             AliasTextBox.Text = config.Alias;
             TimeoutTextBox.Text = config.TimeoutMs.ToString();
 
-            AddressComboBox.ItemsSource = NetworkScanner.GetSelfAddresses();
-
-            foreach (var item in AddressComboBox.Items)
-            {
-                if (item.ToString() == RuntimeSettings.selfAddress)
-                {
-                    AddressComboBox.SelectedValue = item;
-                    break;
-                }
-            }
+            _windowViewModel.SelfAddresses = NetworkScanner.GetSelfAddresses();
+            _windowViewModel.SetSelectedAddress(RuntimeSettings.selfAddress);
         }
 
         #region Обработчики событий формы
@@ -64,7 +60,7 @@ namespace Laus.Views
                 return;
             }
 
-            else if (alias.Length == 0 || alias.Length > Config.MaxAliasLength)
+            else if (alias.Length == 0)
             {
                 System.Windows.MessageBox.Show($"Длина псевдонима может быть от 1 до {Config.MaxAliasLength} символов", "Значение не может быть использовано", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -77,22 +73,18 @@ namespace Laus.Views
 
             config.Save();
 
-            RuntimeSettings.selfAddress = AddressComboBox.Text;
+            RuntimeSettings.selfAddress = _windowViewModel.GetSelectedAddress().ToString();
 
             System.Windows.MessageBox.Show("Файл конфигурации успешно сохранен", "Сохранение завершено", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        void TimeoutTextBoxPreview(object sender, TextCompositionEventArgs e)
+        private void TimeoutTextBoxKeyPreview(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            foreach (char symbol in e.Text)
-            {
-                if (!char.IsDigit(symbol))
-                {
-                    e.Handled = true;
-                    break;
-                }
-            }
+            if (e.Key == Key.Space)
+                e.Handled = true;
         }
+
+        private void TimeoutTextBoxTextPreview(object sender, TextCompositionEventArgs e) => e.Handled = "0123456789".IndexOf(e.Text) < 0;
 
         private void FormKeyPreview(object sender, System.Windows.Input.KeyEventArgs e)
         {

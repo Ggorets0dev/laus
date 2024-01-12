@@ -14,12 +14,12 @@
                 <Separator Opacity="0" Height="2"/>
                 <StackPanel Orientation="Horizontal">
                     <Label>Используемая сеть:</Label>
-                    <ComboBox Name="AddressComboBox" Width="154" Height="23" />
+                    <ComboBox Name="AddressComboBox" ItemsSource="{Binding Path=SelfAddresses}" SelectedIndex="{Binding Path=SelectedAddressIndex}" Width="154" Height="23" />
                 </StackPanel>
                 <Separator Opacity="0" Height="5"/>
                 <StackPanel Orientation="Horizontal">
                     <Label>Максимальное время отклика (мс):</Label>
-                    <TextBox Name="TimeoutTextBox" PreviewTextInput="TimeoutTextBoxPreview" AcceptsReturn="False" TextWrapping="NoWrap" Width="40" Height="20" />
+                    <TextBox Name="TimeoutTextBox" PreviewKeyDown="TimeoutTextBoxKeyPreview" PreviewTextInput="TimeoutTextBoxTextPreview" AcceptsReturn="False" TextWrapping="NoWrap" Width="40" Height="20" />
                 </StackPanel>
                 <Separator Opacity="0" Height="5"/>
                 <StackPanel Orientation="Horizontal">

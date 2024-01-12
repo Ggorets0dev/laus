@@ -17,6 +17,7 @@ namespace Laus
         private string _operationStatus;
         private string _specs;
         private bool _controlPanelEnabled;
+        private bool _lanDevicesListEnabled;
 
         public ObservableCollection<DeviceViewModel> LanDevices
         {
@@ -39,22 +40,29 @@ namespace Laus
             get => _controlPanelEnabled;
             set => Set(ref _controlPanelEnabled, value);
         }
+        public bool LanDevicesListEnabled
+        {
+            get => _lanDevicesListEnabled;
+            set => Set(ref _lanDevicesListEnabled, value);
+        }
 
-        public int SelectedIndex { get; set; }
+        public int SelectedAddressIndex { get; set; }
 
         public MainWindowViewModel()
         {
             _lanDevices = new ObservableCollection<DeviceViewModel>();
             _controlPanelEnabled = true;
-            ResetSelectedIndex();
+            _lanDevicesListEnabled = true;
+
+            ResetSelectedAddressIndex();
             ResetStatus();
-            ResetSpecs();
+            ResetSpecification();
         }
 
-        public void ResetSelectedIndex() => SelectedIndex = -1;
-        public DeviceViewModel GetSelectedItem() => LanDevices[SelectedIndex];
+        public void ResetSelectedAddressIndex() => SelectedAddressIndex = -1;
+        public DeviceViewModel GetSelectedAddress() => LanDevices[SelectedAddressIndex];
         public void ResetStatus() => OperationStatus = _defaultOperationStatus;
-        public void ResetSpecs() => Specs = _specsPlaceholder;
+        public void ResetSpecification() => Specs = _specsPlaceholder;
 
     }
 }

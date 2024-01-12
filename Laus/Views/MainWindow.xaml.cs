@@ -16,6 +16,7 @@ using Laus.ViewModels.Base;
 using Laus.Models;
 using Laus;
 using Laus.Views;
+using System.Windows.Input;
 
 namespace Laus
 {
@@ -58,15 +59,8 @@ namespace Laus
             _ = _server.ListenAsync();
         }
 
-        #region Вспомогательные функции
-
-        private void BlockControlPanel() => _windowViewModel.ControlPanelEnabled = false;
-        private void UnblockControlPanel() => _windowViewModel.ControlPanelEnabled = true;
-
-        #endregion
-
         #region Обработчики событий формы
-        private void NotifyIconClicked(object sender, MouseEventArgs e)
+        private void NotifyIconClicked(object sender, System.Windows.Forms.MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
                 Visibility = Visibility.Visible;
@@ -97,22 +91,22 @@ namespace Laus
 
         private void CheckConnectionButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (_windowViewModel.SelectedIndex == -1)
+            if (_windowViewModel.SelectedAddressIndex == -1)
             {
                 System.Windows.MessageBox.Show("Устройство для проверки соединения не выбрано", "Отсутствие выбранного устройства", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            BlockControlPanel();
+            _windowViewModel.ControlPanelEnabled = false;
             _windowViewModel.OperationStatus = "Проверка доступности устройства...";
             _checkConnectionWorker.RunWorkerAsync();
         }
 
         private void GetDevicesButtonClicked(object sender, RoutedEventArgs e)
         {
-            BlockControlPanel();
+            _windowViewModel.ControlPanelEnabled = false;
             _windowViewModel.LanDevices.Clear();
-            _windowViewModel.ResetSelectedIndex();
+            _windowViewModel.ResetSelectedAddressIndex();
 
             _windowViewModel.OperationStatus = "Получение списка устройств...";
             _lanDevicesWorker.RunWorkerAsync();
@@ -120,8 +114,8 @@ namespace Laus
 
         private void GetSelfSpecsButtonClicked(object sender, RoutedEventArgs e)
         {
-            BlockControlPanel();
-            _windowViewModel.ResetSpecs();
+            _windowViewModel.ControlPanelEnabled = false;
+            _windowViewModel.ResetSpecification();
             _windowViewModel.OperationStatus = "Получение сведений о системе...";
             
             _selfSpecsWorker.RunWorkerAsync();
@@ -129,13 +123,13 @@ namespace Laus
 
         private void GetForeignSpecsButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (_windowViewModel.SelectedIndex == -1)
+            if (_windowViewModel.SelectedAddressIndex == -1)
             {
                 System.Windows.MessageBox.Show("Устройство для проверки соединения не выбрано", "Отсутствие выбранного устройства", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            BlockControlPanel();
+            _windowViewModel.ControlPanelEnabled = false;
             _windowViewModel.OperationStatus = "Получение характеристик выбранного устройства...";
             _foreignSpecsWorker.RunWorkerAsync();
         }
@@ -145,6 +139,14 @@ namespace Laus
             var settingsForm = new SettingsWindow();
             settingsForm.ShowDialog();
         }
+
+        private void DeviceAddressTextBoxKeyPreview(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+                e.Handled = true;
+        }
+
+        private void DeviceAddressTextBoxTextPreview(object sender, TextCompositionEventArgs e) => e.Handled = "0123456789.".IndexOf(e.Text) < 0;
         #endregion
 
         #region Компоненты фоновых потоков
@@ -176,14 +178,14 @@ namespace Laus
                 _windowViewModel.LanDevices.Add(device);
 
             _windowViewModel.ResetStatus();
-            UnblockControlPanel();
+            _windowViewModel.ControlPanelEnabled = true;
         }
 
         private void CheckConnection(object sender, DoWorkEventArgs e)
         {
             try
             {
-                string deviceAddress = _windowViewModel.GetSelectedItem().IpAddress;
+                string deviceAddress = _windowViewModel.GetSelectedAddress().IpAddress;
                 var client = new Client(deviceAddress);
 
                 e.Result = client.CheckUser().isApproved;
@@ -203,8 +205,8 @@ namespace Laus
             else
                 System.Windows.MessageBox.Show("Устройство недоступно для получения характеристик", "Ошибка соединения", MessageBoxButton.OK, MessageBoxImage.Error);
 
-            UnblockControlPanel();
             _windowViewModel.ResetStatus();
+            _windowViewModel.ControlPanelEnabled = true;
         }
 
         private void GetSelfSpecs(object sender, DoWorkEventArgs e)
@@ -227,14 +229,14 @@ namespace Laus
             }
 
             _windowViewModel.ResetStatus();
-            UnblockControlPanel();
+            _windowViewModel.ControlPanelEnabled = true;
         }
         
         private void GetForeignSpecs(object sender, DoWorkEventArgs e)
         {
             try
             {
-                string deviceAddress = _windowViewModel.GetSelectedItem().IpAddress;
+                string deviceAddress = _windowViewModel.GetSelectedAddress().IpAddress;
                 var client = new Client(deviceAddress);
 
                 e.Result = client.GetSpecification();

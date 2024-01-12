@@ -26,11 +26,6 @@
                     <Image Source="../Images/devices.png" Height="28" Width="28" />
                 </StackPanel>
             </Button>
-            <Button x:Name="GetForeignSpecsButton" Click="GetForeignSpecsButtonClicked" ToolTip="Получить характеристики выбранного устройства" Margin="20,0,0,0" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
-                <StackPanel>
-                    <Image Source="../Images/foreign_specs.png" Height="28" Width="28" />
-                </StackPanel>
-            </Button>
             <Button x:Name="CheckConnectionButton" ToolTip="Проверить соединение с выбранным устройством" Click="CheckConnectionButtonClicked" Margin="20,0,0,0" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
                 <StackPanel>
                     <Image Source="../Images/check_connection.png" Height="28" Width="28" />
@@ -39,6 +34,11 @@
             <Button x:Name="GetSelfSpecsButton" ToolTip="Получить характеристики собственного устройства" Margin="20,0,0,0" Click="GetSelfSpecsButtonClicked" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
                 <StackPanel>
                     <Image Source="../Images/self_specs.png" Height="28" Width="28" />
+                </StackPanel>
+            </Button>
+            <Button x:Name="GetForeignSpecsButton" Click="GetForeignSpecsButtonClicked" ToolTip="Получить характеристики выбранного устройства" Margin="20,0,0,0" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
+                <StackPanel>
+                    <Image Source="../Images/foreign_specs.png" Height="28" Width="28" />
                 </StackPanel>
             </Button>
             <Button x:Name="OpenSettingsButton" Click="OpenSettingsButtonClicked" ToolTip="Открыть настройки программы" Margin="20,0,0,0" Width="36" IsEnabled="{Binding ControlPanelEnabled}">
@@ -61,7 +61,7 @@
             <!-- ListView с Label -->
             <StackPanel HorizontalAlignment="Center" Grid.ColumnSpan="2" Width="275">
                 <Label Content="Доступные устройства" FontWeight="Bold" FontSize="13" />
-                <ListView x:Name="LanDevicesListView" DockPanel.Dock="Left" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}" ItemsSource="{Binding LanDevices,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="324" Width="274">
+                <ListView x:Name="LanDevicesListView" DockPanel.Dock="Left" IsEnabled="{Binding Path=LanDevicesListEnabled}" SelectedIndex="{Binding SelectedAddressIndex, Mode=TwoWay}" ItemsSource="{Binding LanDevices,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="324" Width="274">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Foreground" Value="Black"></Setter>
@@ -92,8 +92,8 @@
                 <!-- Для LineEdit -->
             </Grid.ColumnDefinitions>
 
-            <Label Content="Адрес устройства:" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" />
-            <TextBox Margin="5,4,334,4" AcceptsReturn="False" TextWrapping="NoWrap" FontSize="13" Grid.Column="1" />
+            <Label Name="DeviceAddressLabel" Content="Адрес устройства:" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" />
+            <TextBox Name="DeviceAddressTextBox" PreviewKeyDown="DeviceAddressTextBoxKeyPreview" PreviewTextInput="DeviceAddressTextBoxTextPreview"  Margin="5,4,334,4" AcceptsReturn="False" TextWrapping="NoWrap" FontSize="13" Grid.Column="1" />
         </Grid>
 
         <!-- Две Label по горизонтали -->

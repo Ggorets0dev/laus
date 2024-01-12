@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Laus;
 using Laus.Models;
+using WinHardwareSpecs;
+using Newtonsoft.Json;
 
 namespace Test
 {
@@ -14,11 +16,15 @@ namespace Test
     {
         static void Main(string[] args)
         {
-            //var server = new Server(IPAddress.Any, 8888);
+            var specification = SpecMonitor.GetSpecification();
 
-            //server.ListenAsync();
+            string jsonString = specification.ToJson();
 
-            //Console.ReadLine();
+            Console.WriteLine(jsonString);
+
+            // var specification2 = JsonConvert.DeserializeObject<Specification>(jsonString);
+
+            Console.ReadLine();
         }
     }
 }
