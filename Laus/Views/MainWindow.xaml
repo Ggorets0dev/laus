@@ -48,17 +48,15 @@
             </Button>
         </StackPanel>
 
-        <!-- ListView и TextBox -->
+        <!-- Список доступных устройств и поле характеристик -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="32*" />
                 <ColumnDefinition Width="273*"/>
-                <!-- Для ListView -->
                 <ColumnDefinition Width="305*" />
-                <!-- Для TextBox -->
             </Grid.ColumnDefinitions>
 
-            <!-- ListView с Label -->
+            <!-- Доступные устройства -->
             <StackPanel HorizontalAlignment="Center" Grid.ColumnSpan="2" Width="275">
                 <Label Content="Доступные устройства" FontWeight="Bold" FontSize="13" />
                 <ListView x:Name="LanDevicesListView" DockPanel.Dock="Left" IsEnabled="{Binding Path=LanDevicesListEnabled}" SelectedIndex="{Binding SelectedAddressIndex, Mode=TwoWay}" ItemsSource="{Binding LanDevices,UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="324" Width="274">
@@ -76,27 +74,25 @@
                 </ListView>
             </StackPanel>
 
-            <!-- TextBox с Label -->
+            <!-- Характеристики устройства -->
             <StackPanel HorizontalAlignment="Center" Grid.Column="2" Width="284">
                 <Label Content="Характеристики" FontWeight="Bold" FontSize="13" />
                 <TextBox x:Name="SpecsTextBox" HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Height="324" Text="{Binding Path=Specs}" IsReadOnly="True"/>
             </StackPanel>
         </Grid>
 
-        <!-- Label и LineEdit -->
+        <!-- Адрес устройства -->
         <Grid Grid.Row="2" Margin="0,10,0,70" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <!-- Для Label -->
                 <ColumnDefinition Width="*" />
-                <!-- Для LineEdit -->
             </Grid.ColumnDefinitions>
 
             <Label Name="DeviceAddressLabel" Content="Адрес устройства:" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" />
             <TextBox Name="DeviceAddressTextBox" PreviewKeyDown="DeviceAddressTextBoxKeyPreview" PreviewTextInput="DeviceAddressTextBoxTextPreview"  Margin="5,4,334,4" AcceptsReturn="False" TextWrapping="NoWrap" FontSize="13" Grid.Column="1" />
         </Grid>
 
-        <!-- Две Label по горизонтали -->
+        <!-- Сатус выполнения -->
         <StackPanel Orientation="Horizontal" Grid.Row="3">
             <Label Content="Статус выполнения:" FontWeight="Bold" FontSize="13"/>
             <Label x:Name="OperationStatusLabel" Content="{Binding Path=OperationStatus}" FontSize="13"/>

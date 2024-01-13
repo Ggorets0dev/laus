@@ -17,6 +17,8 @@ using Laus.Models;
 using Laus;
 using Laus.Views;
 using System.Windows.Input;
+using System.Net.WebSockets;
+using System.Text.RegularExpressions;
 
 namespace Laus
 {
@@ -25,6 +27,9 @@ namespace Laus
         private NotifyIcon notifyIcon = new NotifyIcon();
 
         private MainWindowViewModel _windowViewModel = new MainWindowViewModel();
+
+        private string _selectedDeviceAddress;
+        private Regex _addressRegex = new Regex(@"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$");
 
         private Server _server = new Server(IPAddress.Any);
 
@@ -44,6 +49,8 @@ namespace Laus
             notifyIcon.ContextMenuStrip = new ContextMenuStrip();
             notifyIcon.ContextMenuStrip.Items.Add("Выход", null, NotifyIconExitSelected);
 
+            DeviceAddressTextBox.MaxLength = 15; // Максимальная длина адреса в формате IPv4
+
             _selfSpecsWorker.DoWork += GetSelfSpecs;
             _selfSpecsWorker.RunWorkerCompleted += SpecsCollected;
 
@@ -58,6 +65,22 @@ namespace Laus
 
             _ = _server.ListenAsync();
         }
+
+        #region Вспомогательные функции
+        private bool SetSelectedDeviceAddress()
+        {
+            bool isDeviceSelected = _windowViewModel.SelectedAddressIndex != -1;
+            bool isAddressEntered = _addressRegex.IsMatch(DeviceAddressTextBox.Text);
+
+           if (isAddressEntered)
+                _selectedDeviceAddress = DeviceAddressTextBox.Text;
+
+            else if (isDeviceSelected)
+                _selectedDeviceAddress = _windowViewModel.GetSelectedAddress().IpAddress;
+
+            return isDeviceSelected || isAddressEntered;
+        }
+        #endregion
 
         #region Обработчики событий формы
         private void NotifyIconClicked(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -91,9 +114,9 @@ namespace Laus
 
         private void CheckConnectionButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (_windowViewModel.SelectedAddressIndex == -1)
+            if (!SetSelectedDeviceAddress())
             {
-                System.Windows.MessageBox.Show("Устройство для проверки соединения не выбрано", "Отсутствие выбранного устройства", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Устройство для проверки соединения не выбрано", "Отсутствие адреса устройства", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -123,9 +146,9 @@ namespace Laus
 
         private void GetForeignSpecsButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (_windowViewModel.SelectedAddressIndex == -1)
+            if (!SetSelectedDeviceAddress())
             {
-                System.Windows.MessageBox.Show("Устройство для проверки соединения не выбрано", "Отсутствие выбранного устройства", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Устройство для получения характеристик не выбрано", "Отсутствие адреса устройства", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -185,14 +208,17 @@ namespace Laus
         {
             try
             {
-                string deviceAddress = _windowViewModel.GetSelectedAddress().IpAddress;
-                var client = new Client(deviceAddress);
-
+                var client = new Client(_selectedDeviceAddress);
                 e.Result = client.CheckUser().isApproved;
             }
-            catch
+            catch (SocketException ex)
             {
-                e.Result = false;
+                System.Windows.MessageBox.Show("Не удалось получить характеристики из-за ошибки в соединении с устройством", "Соединение не установлено", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                if (e.Result == null)
+                    e.Result = false;
             }
         }
 
@@ -201,9 +227,7 @@ namespace Laus
             bool checkResult = (bool)e.Result;
 
             if (checkResult)
-                System.Windows.MessageBox.Show("Устройство доступно для получения характеристик", "Ответ получен", MessageBoxButton.OK, MessageBoxImage.Information);
-            else
-                System.Windows.MessageBox.Show("Устройство недоступно для получения характеристик", "Ошибка соединения", MessageBoxButton.OK, MessageBoxImage.Error);
+                System.Windows.MessageBox.Show("Устройство доступно для получения характеристик", "Соединение установлено", MessageBoxButton.OK, MessageBoxImage.Information);
 
             _windowViewModel.ResetStatus();
             _windowViewModel.ControlPanelEnabled = true;
@@ -223,11 +247,6 @@ namespace Laus
                 _windowViewModel.Specs = specification.ToString();
             }
 
-            else
-            {
-                System.Windows.MessageBox.Show("Не удалось получить характеристики из-за непредвиденной ошибки", "Неудачная попытка получения характеристик", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
             _windowViewModel.ResetStatus();
             _windowViewModel.ControlPanelEnabled = true;
         }
@@ -236,14 +255,16 @@ namespace Laus
         {
             try
             {
-                string deviceAddress = _windowViewModel.GetSelectedAddress().IpAddress;
-                var client = new Client(deviceAddress);
-
+                var client = new Client(_selectedDeviceAddress);
                 e.Result = client.GetSpecification();
             }
             catch (WebException ex)
             {
-                e.Result = null;
+                System.Windows.MessageBox.Show("Не удалось получить характеристики из-за ошибки в соединении с устройством. Ошибка протокола", "Соединение не установлено", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (SocketException ex)
+            {
+                System.Windows.MessageBox.Show("Не удалось получить характеристики из-за ошибки в соединении с устройством. Ошибка сокета", "Соединение не установлено", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         #endregion
