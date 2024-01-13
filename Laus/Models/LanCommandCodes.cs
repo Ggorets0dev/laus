@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Laus.Models
 {
-    internal enum TcpCommandCodes
+    /// <summary>
+    /// Команды между клиентом и сервером
+    /// </summary>
+    internal enum LanCommandCodes
     {
         CheckUser,
         ApproveUser,

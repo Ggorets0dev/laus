@@ -8,6 +8,9 @@ using Newtonsoft.Json;
 
 namespace Laus.Models
 {
+    /// <summary>
+    /// Настройки, сохраняемые в ПЗУ устройства
+    /// </summary>
     internal class Config
     {
         static private readonly string _configPath = "./config.json";

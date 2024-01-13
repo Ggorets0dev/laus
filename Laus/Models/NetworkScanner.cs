@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace Laus.Models
 {
+    /// <summary>
+    /// Работа с локальными сетями
+    /// </summary>
     static internal class NetworkScanner
     {
         static private readonly List<IPAddress> _addressesBlacklist = new List<IPAddress>();

@@ -13,6 +13,9 @@ using WinHardwareSpecs;
 
 namespace Laus.Models
 {
+    /// <summary>
+    /// Сервер для обработки запросов P2P сети
+    /// </summary>
     internal class Server
     {
         private TcpListener _listener;
@@ -49,22 +52,22 @@ namespace Laus.Models
             string readMessage = Encoding.UTF8.GetString(response.ToArray());
             var message = new Message(readMessage);
 
-            if (message.CommandCode == TcpCommandCodes.CheckUser)
+            if (message.CommandCode == LanCommandCodes.CheckUser)
             {
                 string alias = Config.Get().Alias;
-                var bytesMessage = new Message(TcpCommandCodes.ApproveUser, alias).ToBytes();
+                var bytesMessage = new Message(LanCommandCodes.ApproveUser, alias).ToBytes();
 
                 Array.Reverse(bytesMessage);
 
                 await stream.WriteAsync(bytesMessage, 0, bytesMessage.Length);
             }
 
-            else if (message.CommandCode == TcpCommandCodes.RequestSpecs)
+            else if (message.CommandCode == LanCommandCodes.RequestSpecs)
             {
                 var specs = SpecMonitor.GetSpecification();
                 string specsJson = specs.ToJson();
 
-                var bytesMessage =  new Message(TcpCommandCodes.ResponseSpecs, specsJson).ToBytes();
+                var bytesMessage =  new Message(LanCommandCodes.ResponseSpecs, specsJson).ToBytes();
 
                 Array.Reverse(bytesMessage);
 

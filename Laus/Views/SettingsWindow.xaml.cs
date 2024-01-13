@@ -22,6 +22,9 @@ using System.Net;
 
 namespace Laus.Views
 {
+    /// <summary>
+    /// Окно настроек
+    /// </summary>
     public partial class SettingsWindow : System.Windows.Window
     {
         private SettingsViewModel _windowViewModel = new SettingsViewModel();

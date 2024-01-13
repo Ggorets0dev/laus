@@ -22,6 +22,9 @@ using System.Text.RegularExpressions;
 
 namespace Laus
 {
+    /// <summary>
+    /// Главное окно
+    /// </summary>
     public partial class MainWindow : Window
     {
         private NotifyIcon notifyIcon = new NotifyIcon();
@@ -29,7 +32,7 @@ namespace Laus
         private MainWindowViewModel _windowViewModel = new MainWindowViewModel();
 
         private string _selectedDeviceAddress;
-        private Regex _addressRegex = new Regex(@"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$");
+        private Regex _addressRegex = new Regex(@"^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$"); // формат IPv4 
 
         private Server _server = new Server(IPAddress.Any);
 

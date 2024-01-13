@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Laus.Models
 {
-    internal static class RuntimeSettings
+    /// <summary>
+    /// Настройки, сбрасываемые при каждом перезапуске ПО
+    /// </summary>
+    static internal class RuntimeSettings
     {
         static private string _defaultSelfAddress = "127.0.0.1";
         static public string selfAddress {  get; set; }

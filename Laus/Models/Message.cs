@@ -7,6 +7,9 @@ using System.Windows.Interop;
 
 namespace Laus.Models
 {
+    /// <summary>
+    /// Сообщение между клиентом и сервером
+    /// </summary>
     internal class Message
     {
         static private readonly ushort _maxSize = 2048;
@@ -17,16 +20,16 @@ namespace Laus.Models
         static public char Termination => _termination;
         static public ushort MaxSize => _maxSize;
 
-        public TcpCommandCodes CommandCode { get; set; }
+        public LanCommandCodes CommandCode { get; set; }
         public string Data { get; set; }
 
         public Message(string msg)
         {
-            CommandCode = (TcpCommandCodes)int.Parse(msg.Substring(0, msg.IndexOf(_separator)));
+            CommandCode = (LanCommandCodes)int.Parse(msg.Substring(0, msg.IndexOf(_separator)));
             Data = msg.Substring(msg.IndexOf(_separator) + 1, msg.Length - 3);
         }
 
-        public Message(TcpCommandCodes commandCode, string data = "NULL")
+        public Message(LanCommandCodes commandCode, string data = "NULL")
         {
             CommandCode = commandCode;
             Data = data;

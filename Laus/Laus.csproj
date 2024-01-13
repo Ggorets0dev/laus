@@ -87,7 +87,7 @@
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\NetworkScanner.cs" />
     <Compile Include="Models\RuntimeSettings.cs" />
-    <Compile Include="Models\TcpCommandCodes.cs" />
+    <Compile Include="Models\LanCommandCodes.cs" />
     <Compile Include="Models\Server.cs" />
     <Compile Include="ViewModels\Base\ViewModel.cs" />
     <Compile Include="ViewModels\DeviceViewModel.cs" />
@@ -169,6 +169,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\settings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\logo.png" />
+    <Resource Include="Images\work_example.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

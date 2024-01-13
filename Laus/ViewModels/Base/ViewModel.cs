@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Laus.ViewModels.Base
 {
+    /// <summary>
+    /// Базовый класс для всех моделей паттерна MVVM
+    /// </summary>
     internal abstract class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

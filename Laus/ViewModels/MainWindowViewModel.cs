@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Laus
 {
+    /// <summary>
+    /// Модель для описания главного окна
+    /// </summary>
     internal class MainWindowViewModel : ViewModel
     {
         private readonly string _defaultOperationStatus = "Отсутствует";

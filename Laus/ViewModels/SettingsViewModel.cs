@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Laus.ViewModels
 {
+    /// <summary>
+    /// Модель для описания окна настроек
+    /// </summary>
     internal class SettingsViewModel : ViewModel
     {
         private string _version;

@@ -14,6 +14,9 @@ using System.Runtime.InteropServices;
 
 namespace Laus.Models
 {
+    /// <summary>
+    /// Клиент для обработки запросов P2P сети
+    /// </summary>
     internal class Client: IDisposable
     {
         private bool disposed = false;
@@ -39,7 +42,7 @@ namespace Laus.Models
         {
             var stream = _client.GetStream();
 
-            var bytesMessage = new Message(TcpCommandCodes.CheckUser).ToBytes();
+            var bytesMessage = new Message(LanCommandCodes.CheckUser).ToBytes();
             stream.Write(bytesMessage, 0, bytesMessage.Length);
 
             var readBuffer = new byte[Message.MaxSize];
@@ -50,14 +53,14 @@ namespace Laus.Models
             string cleanMessage = Message.ProccessRawBytes(readBuffer);
             var readMessage = new Message(cleanMessage);
 
-            return (readMessage.CommandCode == TcpCommandCodes.ApproveUser, readMessage.Data);
+            return (readMessage.CommandCode == LanCommandCodes.ApproveUser, readMessage.Data);
         }
 
         public Specification GetSpecification()
         {
             var stream = _client.GetStream();
 
-            var bytesMessage = new Message(TcpCommandCodes.RequestSpecs).ToBytes();
+            var bytesMessage = new Message(LanCommandCodes.RequestSpecs).ToBytes();
             stream.Write(bytesMessage, 0, bytesMessage.Length);
 
             var readBuffer = new byte[Message.MaxSize];

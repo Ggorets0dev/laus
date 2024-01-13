@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Laus
 {
+    /// <summary>
+    /// Модель для описания устройства в локальной сети
+    /// </summary>
     internal class DeviceViewModel : ViewModel
     {   
         private string _ipAddress;
