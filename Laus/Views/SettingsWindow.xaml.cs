@@ -12,23 +12,17 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Net;
 
 namespace Laus.Views
 {
     /// <summary>
-    /// Окно настроек
+    /// Окно с настройками приложения
     /// </summary>
     public partial class SettingsWindow : System.Windows.Window
     {
         private SettingsViewModel _windowViewModel = new SettingsViewModel();
 
+        /// <summary>Создание и настройка окна с настройками приложения</summary>
         public SettingsWindow()
         {
             InitializeComponent();
@@ -44,6 +38,8 @@ namespace Laus.Views
             var config = Config.Get();
             AliasTextBox.Text = config.Alias;
             TimeoutTextBox.Text = config.TimeoutMs.ToString();
+
+            LoadOnStartupCheckBox.IsChecked = StartupLoader.IsLoadOnStartup();
 
             _windowViewModel.SelfAddresses = NetworkScanner.GetSelfAddresses();
             _windowViewModel.SetSelectedAddress(RuntimeSettings.selfAddress);
@@ -77,6 +73,8 @@ namespace Laus.Views
             config.Save();
 
             RuntimeSettings.selfAddress = _windowViewModel.GetSelectedAddress().ToString();
+
+            StartupLoader.SetLoadOnStartup((bool)LoadOnStartupCheckBox.IsChecked);
 
             System.Windows.MessageBox.Show("Файл конфигурации успешно сохранен", "Сохранение завершено", MessageBoxButton.OK, MessageBoxImage.Information);
         }

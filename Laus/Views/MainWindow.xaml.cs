@@ -41,6 +41,7 @@ namespace Laus
         private BackgroundWorker _checkConnectionWorker = new BackgroundWorker();
         private BackgroundWorker _foreignSpecsWorker = new BackgroundWorker();
 
+        /// <summary>Создание и настройка главного окна</summary>
         public MainWindow()
         {
             InitializeComponent();
