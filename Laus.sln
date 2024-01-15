@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{7E7A3497-A815-4585-BFF1-DF37BFBC9900}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "LausSetup", "LausSetup\LausSetup.vdproj", "{D08AE26A-31CC-4122-869B-5EAB3B3DBCE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,7 +24,8 @@ Global
 		{30157EA3-8CE2-4829-B790-BE8FD6437F50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{30157EA3-8CE2-4829-B790-BE8FD6437F50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30157EA3-8CE2-4829-B790-BE8FD6437F50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{30157EA3-8CE2-4829-B790-BE8FD6437F50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D08AE26A-31CC-4122-869B-5EAB3B3DBCE0}.Debug|Any CPU.ActiveCfg = Debug
+		{D08AE26A-31CC-4122-869B-5EAB3B3DBCE0}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

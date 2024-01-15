@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Laus.Models
 {
@@ -18,10 +20,17 @@ namespace Laus.Models
 
         static NetworkScanner() 
         {
-            var config = Config.Get();
+            try
+            {
+                var config = Config.Get();
 
-            foreach (var address in config.AddressesBlacklist)
-                _addressesBlacklist.Add(IPAddress.Parse(address));
+                foreach (var address in config.AddressesBlacklist)
+                    _addressesBlacklist.Add(IPAddress.Parse(address));
+            }
+            catch(FileNotFoundException)
+            {
+                MessageBox.Show("Не удается получить список игнорируемых IP адресов по причине отсутствия файла конфигурации", "Файл конфигурации отсутствует", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         static public List<DeviceViewModel> GetLanDevices(IPAddress selfAddress, ushort timeout)

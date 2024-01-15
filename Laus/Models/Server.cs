@@ -10,6 +10,7 @@ using System.Windows.Documents;
 using System.Windows;
 using System.Net.Http;
 using WinHardwareSpecs;
+using System.IO;
 
 namespace Laus.Models
 {
@@ -54,7 +55,18 @@ namespace Laus.Models
 
             if (message.CommandCode == LanCommandCodes.CheckUser)
             {
-                string alias = Config.Get().Alias;
+                string alias;
+                
+                try
+                {
+                    alias = Config.Get().Alias;
+                }
+                catch (FileNotFoundException) 
+                {
+                    alias = "ПСЕВДОНИМ НЕ ОБНАРУЖЕН";
+                    MessageBox.Show("Ошибка при выполнении входящего запроса: не обнаружен файл конфигурации", "Файл конфигурации отсутствует", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
                 var bytesMessage = new Message(LanCommandCodes.ApproveUser, alias).ToBytes();
 
                 Array.Reverse(bytesMessage);

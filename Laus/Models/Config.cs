@@ -24,8 +24,15 @@ namespace Laus.Models
         public ushort TimeoutMs { get; set; }
         public string Alias { get; set; }
 
+        /// <summary>
+        /// Получить объект файла конфигурации по заранее известному пути
+        /// </summary>
+        /// <returns>Конфигурация</returns>
         static public Config Get()
         {
+            if (!Exist())
+                throw new FileNotFoundException();
+
             var serializer = new JsonSerializer();
 
             using (var streamReader = new StreamReader(_configPath))
@@ -37,6 +44,15 @@ namespace Laus.Models
             }
         }
 
+        /// <summary>
+        /// Проверить, существует ли файл конфигурации по заранее известному пути
+        /// </summary>
+        /// <returns>Наличие файла конфигурации</returns>
+        static public bool Exist() => File.Exists(_configPath);
+
+        /// <summary>
+        /// Сохранить файл конфигурации по заранее известному пути
+        /// </summary>
         public void Save()
         {
             string objJson = JsonConvert.SerializeObject(this, Formatting.Indented);

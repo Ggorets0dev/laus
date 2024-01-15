@@ -68,6 +68,9 @@ namespace Laus
             _foreignSpecsWorker.RunWorkerCompleted += SpecsCollected;
 
             _ = _server.ListenAsync();
+
+            if (!Config.Exist())
+                System.Windows.MessageBox.Show("Файл конфигурации не обнаружен, работа приложения будет производиться некорректно", "Файл конфигурации отсутствует", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         #region Вспомогательные функции
@@ -262,11 +265,11 @@ namespace Laus
                 var client = new Client(_selectedDeviceAddress);
                 e.Result = client.GetSpecification();
             }
-            catch (WebException ex)
+            catch (WebException)
             {
                 System.Windows.MessageBox.Show("Не удалось получить характеристики из-за ошибки в соединении с устройством. Ошибка протокола", "Соединение не установлено", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 System.Windows.MessageBox.Show("Не удалось получить характеристики из-за ошибки в соединении с устройством. Ошибка сокета", "Соединение не установлено", MessageBoxButton.OK, MessageBoxImage.Error);
             }
